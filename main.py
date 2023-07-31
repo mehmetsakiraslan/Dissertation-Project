@@ -26,7 +26,6 @@ center = resx/2
 camera = nano.Camera(flip=0, width=resx, height=resy, fps=60)
 state = 0 # 0: arama 1: bardak kolda 2:bardak bırakıldı
 bardak  = 0
-sayac = 5
 state_don = 0
 while bardak < 3:
     frame = camera.read()
@@ -45,48 +44,40 @@ while bardak < 3:
             #frame = cv2.rectangle(frame, (center_det[1], center_det[2]), (center_det[1] + center_det[2], center_det[2] + center_det[4]), (0, 0, 0), 2)
             #cv2.putText(frame, "Black Colour", (center_det[1], center_det[2]), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0))
 
-            if img_w/2-margin < center_det[0] < img_w/2+margin: # 210           
+            if img_w/2-margin < center_det[0] < img_w/2+margin:          
                 ileri()
                 if(largest_det[3] > resx*0.44):
-                    sayac = 5
-                    if sayac == 5:
-                        dur()
-                        
-                        print("TUTTU", largest_det)
-                        cv2.imwrite("tutuş {0}.jpg".format(datetime.now()), frame)
-                        cv2.putText(frame, "Black Colour", (largest_det[1], largest_det[2]), cv2.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0))
-                        print("Siyah", largest_det[0], largest_det[1], largest_det[2], largest_det[3], largest_det[4])
-                        
-                        pwm.ChangeDutyCycle(10)
-                        sleep(0.4)
-                        highs = 0
-                        for x in range(100):
-                            val = GPIO.input(pin_detector)
-                            if val == GPIO.HIGH:
-                                highs = highs + 1
-                        print(highs)
-                        metal = highs == 100
-                        if not metal:
-                            requests.post('https://api.mynotifier.app', {
-                            "apiKey": '95443b83-7c22-4759-93d0-bed8a32e40d5',
-                            "message": "Metal Olmayan Çöp Tespit Edildi!, Yeşil Noktaya Götürülüyor.",
-                            "description": "Başarılı",
-                            "type": "info",  #info, error, warning or success
-                            })
-                            state = 1
-                        else:
-                            requests.post('https://api.mynotifier.app', {
-                            "apiKey": '95443b83-7c22-4759-93d0-bed8a32e40d5',
-                            "message": "Metal Tespit Edildi!, Kırmızı Noktaya Götürülüyor.",
-                            "description": "Başarılı",
-                            "type": "info",  #info, error, warning or success
-                            })
-                            state = 2
-                        geri()
-                        sleep(1)
-                        
-                        dur()
-                        continue
+                    dur()      
+                    print("TUTTU", largest_det)
+                    pwm.ChangeDutyCycle(10)
+                    sleep(1)
+                    highs = 0
+                    for x in range(100):
+                        val = GPIO.input(pin_detector)
+                        if val == GPIO.HIGH:
+                            highs = highs + 1
+                    print(highs)
+                    metal = highs > 90
+                    if not metal:
+                        requests.post('https://api.mynotifier.app', {
+                        "apiKey": 'c0b46c35-87d2-470f-a1bf-25f86b229246',
+                        "message": "Metal Olmayan Çöp Tespit Edildi!, Yeşil Noktaya Götürülüyor.",
+                        "description": "Başarılı",
+                        "type": "info",  #info, error, warning or success
+                        })
+                        state = 1
+                    else:
+                        requests.post('https://api.mynotifier.app', {
+                        "apiKey": 'c0b46c35-87d2-470f-a1bf-25f86b229246',
+                        "message": "Metal Tespit Edildi!, Kırmızı Noktaya Götürülüyor.",
+                        "description": "Başarılı",
+                        "type": "info",  #info, error, warning or success
+                        })
+                        state = 2
+                    geri()
+                    sleep(2)     
+                    dur()
+                    continue
             elif center_det[0] < img_w/2-margin:
                 sol()
             elif center_det[0] >= img_w/2 + margin:
@@ -104,21 +95,14 @@ while bardak < 3:
             largest_green = dets[idx]
             if img_w/2-margin < largest_green[0] < img_w/2+margin: # merkez, xb, yb, wb, hb     
                 ileri()
-                if(largest_green[4] > resy*0.58 and largest_green[3] > 0.39):
+                if(largest_green[4] > resy*0.58):
                     pwm.ChangeDutyCycle(5)
                     bardak = bardak + 1
                     geri()
                     sleep(1)
                     sol_arka()
                     sleep(1)
-                    while False:
-                        frame = camera.read()
-                        dets = find_black(frame)
-                        widths = [det[3] for det in dets]
-                        idx = widths.index(max(widths))
-                        largest_det = dets[idx]
-                        if largest_det[3] < resx*0.13:
-                            break
+                    
                     sol()
                     while True:
                         frame = camera.read()
@@ -143,7 +127,7 @@ while bardak < 3:
             largest_red = dets[idx]
             if img_w/2-margin < largest_red[0] < img_w/2+margin: # merkez, xb, yb, wb, hb     
                 ileri()
-                if(largest_red[4] > resy*0.58 and largest_red[3] > 0.39):
+                if(largest_red[4] > resy*0.58):
                     pwm.ChangeDutyCycle(5)
                     bardak = bardak + 1
                     print("Birakti")
@@ -151,14 +135,6 @@ while bardak < 3:
                     sleep(1)
                     sag_arka()
                     sleep(1)
-                    while False:
-                        frame = camera.read()
-                        dets = find_black(frame)
-                        widths = [det[3] for det in dets]
-                        idx = widths.index(max(widths))
-                        largest_det = dets[idx]
-                        if largest_det[3] < resx*0.13:
-                            break
                     sag()
                     while True:
                         frame = camera.read()
