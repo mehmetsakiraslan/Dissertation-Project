@@ -1,7 +1,7 @@
 # Dissertation-Project
 Jetson Nano Jetbot based garbage collecting robot.
 
-1- main.py: robot haraket fonksiyonlarını kontrol eder
+1- main.py: robot haraket fonksiyonlarını kontrol eder ve haberleşmeyi sağlar 
 
 2- color_detection.py: görüntü işleme fonksiyonları, turuncu rengi bul pushlanmamış hali
 
