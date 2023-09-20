@@ -1,6 +1,7 @@
 # Dissertation-Project
 
-![WhatsApp Image 2023-09-20 at 15 42 54](https://github.com/mehmetsakiraslan/Dissertation-Project/assets/87070594/564b2fad-f1f0-419e-8049-766107d4c396)
+![asd](https://github.com/mehmetsakiraslan/Dissertation-Project/assets/87070594/d435e700-956f-4d83-bdec-afeac3a2728a)
+
 
 Jetson Nano Jetbot based garbage collecting robot designed for final project.  Robot does the following:
 
